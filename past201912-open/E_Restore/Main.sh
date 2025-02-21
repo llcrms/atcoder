@@ -5,18 +5,19 @@ YES="Y"
 NO="N"
 
 function follow() {
-    u=$1
-    follow=$2
+    local u=$1
+    local flw=$2
+
     # echo -n $u
     # echo ,${auser[@]}
-    auser[${u}]=${auser[${u}]:0:$(($follow - 1))}${YES}${auser[${u}]:${follow}}
+    auser[${u}]=${auser[${u}]:0:$(($flw - 1))}${YES}${auser[${u}]:${flw}}
     # echo ">" ${auser[@]}
 }
 
 function follow_back() {
-    u=$1
-    i=0
-    while [[ $i < $nuser ]]; do
+    local u=$1
+    local i=0
+    while [[ $i -lt $nuser ]]; do
         if [[ ${u} -eq ${i} ]]; then
             continue
         fi
@@ -29,17 +30,15 @@ function follow_back() {
 }
 
 function follow_follow() {
-    u=$1
-    i=0
-    f=${auser[${u}]}
-    # echo follow_follow: ${u} ${f}
+    local u=$1
+    local i=0
+    local f=${auser[${u}]}
     for i in $(eval echo {1..${#f}}); do
         f1=${f:$((${i} - 1)):1}
         if [[ ${f1} != ${YES} ]]; then
             continue;
         fi
         ff=${auser[${i}]}
-        # echo ,$i ${f1},${ff}
         for j in $(eval echo {1..${#ff}}); do
             f2=${ff:$((${j} - 1)):1}
             if [[ ${f2} != ${YES} ]]; then
@@ -48,23 +47,21 @@ function follow_follow() {
             follow ${u} ${j}
         done
     done
-    # while [[ $i < $nuser ]]; do
-    # done
 }
 
 i=0
 x=""
-while [[ $i < $nuser ]]; do
+while [[ $i -lt $nuser ]]; do
     x+=${NO}
     i=$(($i + 1))
 done
 i=0
-while [[ $i < $nuser ]]; do
+while [[ $i -lt $nuser ]]; do
     i=$(($i + 1))
     auser[${i}]=$x
 done
 i=0
-while [[ $i < $count ]]; do
+while [[ $i -lt $count ]]; do
     i=$(($i + 1))
     read op u m
     # echo $op $u $m
@@ -74,6 +71,5 @@ while [[ $i < $count ]]; do
     3) follow_follow ${u} ;;
     *) ;;
     esac
-    # echo ${i} ${op} ${user} ${member}
 done
 echo ${auser[@]} | sed -e 's/ /\n/g'
