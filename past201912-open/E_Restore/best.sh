@@ -16,11 +16,13 @@ function follow() {
 
 function follow_back() {
     local u=$1
-    for i in $(seq ${nuser}); do
+    local i=0
+    while [[ $i -lt $nuser ]]; do
         if [[ ${u} -eq ${i} ]]; then
             continue
         fi
-        fb=${auser[${i}]:$(($u - 1)):1}
+        i=$(($i + 1))
+        fb=${auser[${i}]:$((u - 1)):1}
         if [[ ${fb} = ${YES} ]]; then
             auser[${u}]=${auser[${u}]:0:$(($i - 1))}${YES}${auser[${u}]:${i}:$(($nuser - $i))}
         fi
@@ -29,14 +31,15 @@ function follow_back() {
 
 function follow_follow() {
     local u=$1
+    local i=0
     local f=${auser[${u}]}
-    for i in $(seq ${nuser}); do
+    for i in $(eval echo {1..${#f}}); do
         f1=${f:$((${i} - 1)):1}
         if [[ ${f1} != ${YES} ]]; then
             continue;
         fi
         ff=${auser[${i}]}
-        for j in $(seq ${nuser}); do
+        for j in $(eval echo {1..${#ff}}); do
             f2=${ff:$((${j} - 1)):1}
             if [[ ${f2} != ${YES} ]]; then
                 continue;
@@ -46,15 +49,20 @@ function follow_follow() {
     done
 }
 
-# x=$(printf "%${nuser}s" | tr ' ' 'N')
+i=0
 x=""
-for z in $(seq ${nuser}); do
+while [[ $i -lt $nuser ]]; do
     x+=${NO}
+    i=$(($i + 1))
 done
-for z in $(seq ${nuser}); do
-    auser[${z}]=$x
+i=0
+while [[ $i -lt $nuser ]]; do
+    i=$(($i + 1))
+    auser[${i}]=$x
 done
-for z in $(seq ${count}); do
+i=0
+while [[ $i -lt $count ]]; do
+    i=$(($i + 1))
     read op u m
     # echo $op $u $m
     case ${op} in
