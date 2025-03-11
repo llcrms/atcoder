@@ -1,0 +1,1 @@
+sed -e "s/\([A-Z][a-z]*[A-Z]\)/\1\n/g" | sort | sed -z "s/\n//g"
