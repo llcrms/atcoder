@@ -1,4 +1,4 @@
-F - DoubleCamelCase Sort  / 
+F - DoubleCamelCase Sort
 実行時間制限: 2 sec / メモリ制限: 1024 MB
 
 注意
@@ -25,14 +25,6 @@ F - DoubleCamelCase Sort  /
 入力例 1　 FisHDoGCaTAAAaAAbCAC
 出力例 1　 AAAaAAbCACCaTDoGFisH
 問題文で用いた例である。
-
-FisH
-DoG
-CaT
-AA
-AaA
-AbC
-AC
 
 
 
