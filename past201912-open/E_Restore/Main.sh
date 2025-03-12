@@ -1,23 +1,19 @@
 read nuser count
 
-head -n${count} | (
+YES="Y"
+NO="N"
+
 declare -a aryuser=(
     `seq $(( ${nuser} * ${nuser} ))`
 )
 
 ary_index=
 function ary_offset () {
-    ary_index=$(( ($1 - 1) * ${nuser} + ($2 - 1)));
+    ary_index=$(( ($1 - 1) * ${nuser} + $2 - 1));
 }
 
-YES="Y"
-NO="N"
-
 function follow() {
-    export aryuser
-    local lu=${1}
-    local li=${2}
-    ary_offset ${lu} ${li}
+    ary_offset ${1} ${2}
     # echo $ary_index
     aryuser[$ary_index]=${YES}
 }
@@ -61,16 +57,15 @@ function answer () {
     echo ${aryuser[*]} | sed -e 's/[0-9][0-9]*/'${NO}'/g' -e 's/ //g' | fold -w ${nuser}
 }
 
-
-i=0
-while read op u m; do
-    # echo $op $u $m
-    case ${op} in
-    1) follow ${u} ${m} ;;
-    2) follow_back ${u} ;;
-    3) follow_follow ${u} ;;
-    *) ;;
-    esac
-done
-answer;
+head -n${count} | (
+    while read op u m; do
+        # echo $op $u $m
+        case ${op} in
+        1) follow ${u} ${m} ;;
+        2) follow_back ${u} ;;
+        3) follow_follow ${u} ;;
+        *) ;;
+        esac
+    done
+    answer;
 )
