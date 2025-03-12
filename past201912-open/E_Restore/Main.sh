@@ -1,30 +1,35 @@
 read nuser count
-declare -a auser=()
+
+declare -a aryuser=(
+    `seq $(( ${nuser} * ${nuser} ))`
+)
+
+ary_index=
+function ary_offset () {
+    ary_index=$(( ($1 - 1) * ${nuser} + ($2 - 1)));
+}
 
 YES="Y"
 NO="N"
 
 function follow() {
-    local u=$1
-    local flw=$2
-
-    # echo -n $u
-    # echo ,${auser[@]}
-    auser[${u}]=${auser[${u}]:0:$(($flw - 1))}${YES}${auser[${u}]:${flw}}
-    # echo ">" ${auser[@]}
+    export aryuser
+    local lu=${1}
+    local li=${2}
+    ary_offset ${lu} ${li}
+    # echo $ary_index
+    aryuser[$ary_index]=${YES}
 }
 
 function follow_back() {
     local u=$1
-    local i=0
-    while [[ $i -lt $nuser ]]; do
+    for i in $(eval echo {1..${nuser}}); do
         if [[ ${u} -eq ${i} ]]; then
             continue
         fi
-        i=$(($i + 1))
-        fb=${auser[${i}]:$((u - 1)):1}
-        if [[ ${fb} = ${YES} ]]; then
-            auser[${u}]=${auser[${u}]:0:$(($i - 1))}${YES}${auser[${u}]:${i}:$(($nuser - $i))}
+        ary_offset ${i} ${u}
+        if [[ ${aryuser[$ary_index]} = ${YES} ]]; then
+            follow ${u} ${i}
         fi
     done
 }
@@ -32,34 +37,30 @@ function follow_back() {
 function follow_follow() {
     local u=$1
     local i=0
-    local f=${auser[${u}]}
-    for i in $(eval echo {1..${#f}}); do
-        f1=${f:$((${i} - 1)):1}
-        if [[ ${f1} != ${YES} ]]; then
-            continue;
+    local f=${nuser}
+    for i in `for ii in $(eval echo {1..${nuser}}); do
+        ary_offset ${u} ${ii}
+        if [[ ${aryuser[$ary_index]} = ${YES} ]]; then
+            echo ${ii}
         fi
-        ff=${auser[${i}]}
-        for j in $(eval echo {1..${#ff}}); do
-            f2=${ff:$((${j} - 1)):1}
-            if [[ ${f2} != ${YES} ]]; then
-                continue;
+    done` ; do
+        for j in $(eval echo {1..${nuser}}); do
+            ary_offset ${i} ${j}
+            if [[ ${aryuser[$ary_index]} = ${YES} ]]; then
+                follow ${u} ${j}
             fi
-            follow ${u} ${j}
         done
     done
+
 }
 
-i=0
-x=""
-while [[ $i -lt $nuser ]]; do
-    x+=${NO}
-    i=$(($i + 1))
-done
-i=0
-while [[ $i -lt $nuser ]]; do
-    i=$(($i + 1))
-    auser[${i}]=$x
-done
+function answer () {
+    # echo ${aryuser[*]}
+    # echo ${aryuser[*]} | sed -e 's/ *[0-9]* */'${NO}'/g' -e 's/ //g'
+    echo ${aryuser[*]} | sed -e 's/[0-9][0-9]*/'${NO}'/g' -e 's/ //g' | fold -w ${nuser}
+}
+
+
 i=0
 while [[ $i -lt $count ]]; do
     i=$(($i + 1))
@@ -72,4 +73,4 @@ while [[ $i -lt $count ]]; do
     *) ;;
     esac
 done
-echo ${auser[@]} | sed -e 's/ /\n/g'
+answer;
