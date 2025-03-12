@@ -1,5 +1,6 @@
 read nuser count
 
+head -n${count} | (
 declare -a aryuser=(
     `seq $(( ${nuser} * ${nuser} ))`
 )
@@ -62,9 +63,7 @@ function answer () {
 
 
 i=0
-while [[ $i -lt $count ]]; do
-    i=$(($i + 1))
-    read op u m
+while read op u m; do
     # echo $op $u $m
     case ${op} in
     1) follow ${u} ${m} ;;
@@ -74,3 +73,4 @@ while [[ $i -lt $count ]]; do
     esac
 done
 answer;
+)
