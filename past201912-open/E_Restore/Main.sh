@@ -9,7 +9,7 @@ declare -a aryuser=(
 
 ary_index=
 function ary_offset () {
-    ary_index=$(( ($1 - 1) * ${nuser} + $2 - 1));
+    ary_index=$(( ($1 - 1) * ${nuser} + $2 - 1 ));
 }
 
 function follow() {
@@ -21,11 +21,11 @@ function follow() {
 function follow_back() {
     local u=$1
     for i in $(eval echo {1..${nuser}}); do
-        if [[ ${u} -eq ${i} ]]; then
+        if [[ "${u}" = "${i}" ]]; then
             continue
         fi
         ary_offset ${i} ${u}
-        if [[ ${aryuser[$ary_index]} = ${YES} ]]; then
+        if [[ "${aryuser[$ary_index]}" = ${YES} ]]; then
             follow ${u} ${i}
         fi
     done
@@ -35,15 +35,15 @@ function follow_follow() {
     local u=$1
     local i=0
     local f=${nuser}
-    for i in `for ii in $(eval echo {1..${nuser}}); do
-        ary_offset ${u} ${ii}
-        if [[ ${aryuser[$ary_index]} = ${YES} ]]; then
-            echo ${ii}
-        fi
-    done` ; do
+    for i in $(for ii in $(eval echo {1..${nuser}}); do
+                ary_offset ${u} ${ii};
+                if [[ "${aryuser[$ary_index]}" = ${YES} ]]; then
+                    echo ${ii};
+                fi
+            done) ; do
         for j in $(eval echo {1..${nuser}}); do
             ary_offset ${i} ${j}
-            if [[ ${aryuser[$ary_index]} = ${YES} ]]; then
+            if [[ "${aryuser[$ary_index]}" = ${YES} ]]; then
                 follow ${u} ${j}
             fi
         done
