@@ -42,6 +42,9 @@ function follow_follow() {
                 fi
             done) ; do
         for j in $(eval echo {1..${nuser}}); do
+            if [[ "${u}" = "${j}" ]]; then
+                continue
+            fi
             ary_offset ${i} ${j}
             if [[ "${aryuser[$ary_index]}" = ${YES} ]]; then
                 follow ${u} ${j}
