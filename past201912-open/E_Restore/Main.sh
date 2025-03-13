@@ -38,7 +38,7 @@ function follow_back () {
 function follow_follow () {
     local u=$1
     local i=0
-    local u_index=$(( ( ${u} - 1 ) * ${nuser} )) 
+    local u_index=$(( (${u} - 1) * ${nuser} )) 
     for i in $(for ii in ${IN_NUSER}; do
                 # ary_offset ${u} ${ii};
                 if [[ ${aryuser[$u_index]} = ${YES} ]]; then
@@ -46,12 +46,14 @@ function follow_follow () {
                 fi
                 u_index=$(( ${u_index} + 1 ))
             done) ; do
+        local i_index=$(( (${i} - 1) * ${nuser} ))
         for j in ${IN_NUSER}; do
             if [[ ${u} = ${j} ]]; then
                 continue
             fi
-            ary_offset ${i} ${j}
-            if [[ ${aryuser[$ary_index]} = ${YES} ]]; then
+            # ary_offset ${i} ${j}
+            j_index=$(( ${i_index} + ${j} - 1 ))
+            if [[ ${aryuser[$j_index]} = ${YES} ]]; then
                 follow ${u} ${j}
             fi
         done
