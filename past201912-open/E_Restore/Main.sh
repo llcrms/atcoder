@@ -1,13 +1,14 @@
 read nuser count
 
 IN_NUSER=$(seq -s' ' ${nuser})
+ARY_MAX=$(( ${nuser} * ${nuser} ))
 YES="Y"
 NO="N"
 
 declare -a aryuser=(
     # $( eval echo {1..$(( ${nuser} * ${nuser} ))} )
     # $(seq $(( ${nuser} * ${nuser} )) )
-    $( seq $(( ${nuser} * ${nuser} )) | sed -e 's/[0-9]*/N/g' )
+    $( seq ${ARY_MAX} | sed -e 's/[0-9]*/N/g' )
 )
 
 ary_index=0
@@ -24,7 +25,7 @@ function follow () {
 function follow_back () {
     local u=$1
     for i in ${IN_NUSER}; do
-        if [[ "${u}" = "${i}" ]]; then
+        if [[ ${u} = ${i} ]]; then
             continue
         fi
         ary_offset ${i} ${u}
@@ -37,14 +38,16 @@ function follow_back () {
 function follow_follow () {
     local u=$1
     local i=0
+    local u_index=$(( ( ${u} - 1 ) * ${nuser} )) 
     for i in $(for ii in ${IN_NUSER}; do
-                ary_offset ${u} ${ii};
-                if [[ ${aryuser[$ary_index]} = ${YES} ]]; then
+                # ary_offset ${u} ${ii};
+                if [[ ${aryuser[$u_index]} = ${YES} ]]; then
                     echo ${ii};
                 fi
+                u_index=$(( ${u_index} + 1 ))
             done) ; do
         for j in ${IN_NUSER}; do
-            if [[ "${u}" = "${j}" ]]; then
+            if [[ ${u} = ${j} ]]; then
                 continue
             fi
             ary_offset ${i} ${j}
